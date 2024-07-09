@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Menu</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/menu.css') }}">
+</head>
+<body>
+    <a href="{{ url_for('main.index') }}" class="back-btn">Home</a>
+
+    <div class="container">
+        <h1>Menu</h1>
+        <button id="addItemBtn">Add Item</button>
+
+        <div id="addItemForm" class="form-container" style="display:none;">
+            <form method="POST" action="{{ url_for('main.menu') }}">
+                <label for="name">Name:</label>
+                <input type="text" id="name" name="name" required><br>
+                <label for="ingredients">Ingredients:</label>
+                <input type="text" id="ingredients" name="ingredients" required><br>
+                <label for="price">Price:</label>
+                <input type="number" id="price" name="price" step="0.01" required><br>
+                <label for="cost">Cost:</label>
+                <input type="number" id="cost" name="cost" step="0.01" required><br>
+                <input type="submit" value="Add Item">
+            </form>
+        </div>
+
+        <div class="menu-header">
+            <span class="header-name">Item Name</span>
+            <span class="header-ingredients">Ingredients</span>
+            <span class="header-price">Price</span>
+            <span class="header-actions">Actions</span>
+        </div>
+
+        <ul class="menu-list">
+            {% for item in menu_items %}
+                <li class="menu-item">
+                    <span class="item-name">{{ item.name }}</span>
+                    <span class="item-ingredients">{{ item.ingredients }}</span>
+                    <span class="item-price">{{ item.price }}</span>
+                    <span class="item-actions">
+                        <form method="POST" action="{{ url_for('main.delete_item', item_id=item.id) }}" style="display:inline;">
+                            <button type="submit">Delete</button>
+                        </form>
+                    </span>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <script>
+        document.getElementById('addItemBtn').addEventListener('click', function() {
+            document.getElementById('addItemForm').style.display = 'block';
+        });
+    </script>
+</body>
+</html>

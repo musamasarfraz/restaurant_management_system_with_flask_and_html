@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Restaurant Management System</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/index.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <a href="{{ url_for('main.orders') }}" class="tile">
+            <i class="fas fa-receipt"></i>
+            <span>Orders</span>
+        </a>
+        <a href="{{ url_for('main.menu') }}" class="tile">
+            <i class="fas fa-utensils"></i>
+            <span>Menu</span>
+        </a>
+        <a href="{{ url_for('main.employees') }}" class="tile">
+            <i class="fas fa-users"></i>
+            <span>Employees</span>
+        </a>
+        <a href="{{ url_for('main.sales') }}" class="tile">
+            <i class="fas fa-history"></i>
+            <span>Order History</span>
+        </a>
+        <a href="{{ url_for('main.financial_report') }}" class="tile">
+            <i class="fas fa-chart-line"></i>
+            <span>Financial Report</span>
+        </a>
+    </div>
+</body>
+</html>

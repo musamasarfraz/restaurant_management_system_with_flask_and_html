@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Orders</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/orders.css') }}">
+</head>
+<body>
+    <a href="{{ url_for('main.index') }}" class="back-btn">Home</a>
+    <h1>Place Order</h1>
+    <form method="POST">
+        <label for="customer_name">Customer Name:</label>
+        <input type="text" id="customer_name" name="customer_name" required>
+        <h2>Menu</h2>
+        <table id="menu_items">
+            <thead>
+                <tr>
+                    <th>Select</th>
+                    <th>Item Name</th>
+                    <th>Ingredients</th>
+                    <th>Unit Price</th>
+                    <th>Quantity</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in menu_items %}
+                    <tr>
+                        <td><input type="checkbox" name="order_items" value="{{ item.id }}" class="large-checkbox"></td>
+                        <td>{{ item.name }}</td>
+                        <td>{{ item.ingredients }}</td>
+                        <td>${{ item.price }}</td>
+                        <td>
+                            <div class="quantity-controls">
+                                <button type="button" class="quantity-btn" onclick="decreaseQuantity(this)">-</button>
+                                <input type="number" name="quantity" min="1" value="1" class="quantity-input">
+                                <button type="button" class="quantity-btn" onclick="increaseQuantity(this)">+</button>
+                            </div>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <button type="submit">Place Order</button>
+    </form>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <ul>
+            {% for category, message in messages %}
+                <li class="{{ category }}">{{ message }}</li>
+            {% endfor %}
+            </ul>
+        {% endif %}
+    {% endwith %}
+    <script>
+        function decreaseQuantity(button) {
+            const input = button.nextElementSibling;
+            if (input.value > 1) {
+                input.value = parseInt(input.value) - 1;
+            }
+        }
+
+        function increaseQuantity(button) {
+            const input = button.previousElementSibling;
+            input.value = parseInt(input.value) + 1;
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Employees</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/employees.css') }}">
+</head>
+<body>
+    <a href="{{ url_for('main.index') }}" class="back-btn">Home</a>
+
+    <div class="container">
+        <h1>Employee Management</h1>
+        <button id="addEmployeeBtn">Add Employee</button>
+
+        <div id="addEmployeeForm" class="form-container" style="display:none;">
+            <form method="POST">
+                <h2>Add Employee</h2>
+                <label for="name">Name:</label>
+                <input type="text" id="name" name="name" required>
+                <label for="contact">Contact:</label>
+                <input type="text" id="contact" name="contact" required>
+                <label for="salary">Salary:</label>
+                <input type="number" id="salary" name="salary" step="0.01" required>
+                <input type="submit" name="add_employee" value="Add Employee">
+            </form>
+        </div>
+
+        <h2>Employee List</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Contact</th>
+                    <th>Salary</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for employee in employees %}
+                    <tr>
+                        <td>{{ employee.name }}</td>
+                        <td>{{ employee.contact }}</td>
+                        <td>{{ employee.salary }}</td>
+                        <td>
+                            <form method="POST" style="display:inline;">
+                                <input type="hidden" name="employee_id" value="{{ employee.id }}">
+                                <button type="submit" name="remove_employee" class="remove-button">Remove</button>
+                            </form>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        document.getElementById('addEmployeeBtn').addEventListener('click', function() {
+            document.getElementById('addEmployeeForm').style.display = 'block';
+        });
+    </script>
+</body>
+</html>

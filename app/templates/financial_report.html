@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Financial Report</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/financial_report.css') }}">
+</head>
+<body>
+    <h1>Financial Report</h1>
+    <form method="POST">
+        <label for="year">Select Financial Year:</label>
+        <select id="year" name="year" required>
+            {% for year in range(2020, datetime.now().year + 1) %}
+                <option value="{{ year }}">{{ year }}</option>
+            {% endfor %}
+        </select>
+
+        <label for="months">Select Months:</label>
+        <div id="months">
+            <label><input type="checkbox" name="months" value="1"> January</label>
+            <label><input type="checkbox" name="months" value="2"> February</label>
+            <label><input type="checkbox" name="months" value="3"> March</label>
+            <label><input type="checkbox" name="months" value="4"> April</label>
+            <label><input type="checkbox" name="months" value="5"> May</label>
+            <label><input type="checkbox" name="months" value="6"> June</label>
+            <label><input type="checkbox" name="months" value="7"> July</label>
+            <label><input type="checkbox" name="months" value="8"> August</label>
+            <label><input type="checkbox" name="months" value="9"> September</label>
+            <label><input type="checkbox" name="months" value="10"> October</label>
+            <label><input type="checkbox" name="months" value="11"> November</label>
+            <label><input type="checkbox" name="months" value="12"> December</label>
+        </div>
+        
+        <button type="button" onclick="toggleExpenditureForm()">Add Other Expenditure</button>
+        
+        <div id="expenditureForm" class="form-container" style="display:none;">
+            <h2>Add Expenditure</h2>
+            <form method="POST">
+                <label for="name">Expenditure Name:</label>
+                <input type="text" id="name" name="name" required>
+                <label for="amount">Amount:</label>
+                <input type="number" id="amount" name="amount" step="0.01" required>
+                <button type="submit" name="add_expenditure">Add Expenditure</button>
+            </form>
+        </div>
+        
+        {% if expenditures %}
+            <h2>Added Expenditures</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Amount</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for exp in expenditures %}
+                        <tr>
+                            <td>{{ exp.name }}</td>
+                            <td>${{ exp.amount }}</td>
+                            <td>
+                                <form method="POST" style="display:inline;">
+                                    <input type="hidden" name="expenditure_id" value="{{ exp.id }}">
+                                    <button type="submit" name="remove_expenditure">Remove</button>
+                                </form>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% endif %}
+
+        <button type="submit" name="generate_report">Generate Report</button>
+    </form>
+
+    {% if total_sales is not none %}
+        <div id="report">
+            <p><strong>Selected Year:</strong> {{ selected_year }}</p>
+            <p><strong>Selected Months:</strong> {{ selected_months|join(', ') }}</p>
+            <p><strong>Total Sales:</strong> ${{ total_sales }}</p>
+            <p><strong>Total Cost:</strong> ${{ total_cost }}</p>
+            <p><strong>Total Salaries:</strong> ${{ total_salaries }}</p>
+            <p><strong>Other Expenditures:</strong> ${{ other_expenditures }}</p>
+            <p><strong>Total Profit:</strong> ${{ total_profit }}</p>
+        </div>
+        <button onclick="window.print()">Print Report</button>
+    {% endif %}
+    <a href="{{ url_for('main.index') }}">Back to Home</a>
+
+    <script>
+        function toggleExpenditureForm() {
+            var form = document.getElementById('expenditureForm');
+            if (form.style.display === 'none') {
+                form.style.display = 'block';
+            } else {
+                form.style.display = 'none';
+            }
+        }
+    </script>
+</body>
+</html>
