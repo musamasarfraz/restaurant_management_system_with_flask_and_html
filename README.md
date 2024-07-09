@@ -77,33 +77,6 @@ To install and run the RMS locally, follow these steps:
 
 - Navigate to the **Financial Report** page to generate monthly financial reports. Select the financial year and months to generate a report. Add additional expenditures if necessary.
 
-## Project Structure
-
-Restaurant Management System (RMS)/
-├── app/
-│ ├── init.py
-│ ├── auth.py
-│ ├── main.py
-│ ├── models.py
-│ ├── templates/
-│ │ ├── index.html
-│ │ ├── orders.html
-│ │ ├── order_history.html
-│ │ ├── menu.html
-│ │ ├── employees.html
-│ │ ├── financial_report.html
-│ ├── static/
-│ │ ├── css/
-│ │ │ ├── index.css
-│ │ │ ├── orders.css
-│ │ │ ├── menu.css
-│ │ │ ├── employees.css
-│ │ │ ├── financial_report.css
-├── instances/restaurant.db
-├── run.py
-├── requirements.txt
-└── README.md
-
 
 ## Contributing
 
