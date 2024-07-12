@@ -9,6 +9,7 @@ class MenuItem(db.Model):
     ingredients = db.Column(db.String(200), nullable=False)
     price = db.Column(db.Float, nullable=False)
     cost = db.Column(db.Float, nullable=False)
+    deleted = db.Column(db.Boolean, default=False, nullable=False)
 
     def __repr__(self):
         return f'<MenuItem {self.name}>'

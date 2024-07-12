@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Financial Report</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/financial_report.css') }}">
+</head>
+<body>
+    <h1>Financial Report</h1>
+    <div id="report">
+        <p><strong>Selected Year:</strong> {{ report.selected_year }}</p>
+        <p><strong>Selected Months:</strong> {{ report.selected_months|join(', ') }}</p>
+        <p><strong>Total Sales:</strong> {{ report.total_sales }}</p>
+        <p><strong>Total Cost:</strong> {{ report.total_cost }}</p>
+        <p><strong>Total Salaries:</strong> {{ report.total_salaries }}</p>
+        <p><strong>Other Expenditures:</strong></p>
+        <ul>
+            {% for exp in report.expenditure_details %}
+                <li>{{ exp.name }}: {{ exp.amount }}</li>
+            {% endfor %}
+        </ul>
+        <p><strong>Total Other Expenditures:</strong> {{ report.other_expenditures }}</p>
+        <p><strong>Total Profit:</strong> {{ report.total_profit }}</p>
+    </div>
+    <button onclick="window.print()">Print Report</button>
+</body>
+</html>

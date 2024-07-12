@@ -23,7 +23,7 @@
                     <td>{{ order.id }}</td>
                     <td>{{ order.customer_name }}</td>
                     <td>{{ order.datetime.strftime('%Y-%m-%d %H:%M:%S') }}</td>
-                    <td>${{ order.total_amount }}</td>
+                    <td>{{ order.total_amount }}</td>
                 </tr>
             {% endfor %}
         </tbody>

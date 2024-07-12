@@ -8,7 +8,7 @@
 <body>
     <a href="{{ url_for('main.index') }}" class="back-btn">Home</a>
     <h1>Place Order</h1>
-    <form method="POST">
+    <form id="order-form" method="POST">
         <label for="customer_name">Customer Name:</label>
         <input type="text" id="customer_name" name="customer_name" required>
         <h2>Menu</h2>
@@ -28,11 +28,11 @@
                         <td><input type="checkbox" name="order_items" value="{{ item.id }}" class="large-checkbox"></td>
                         <td>{{ item.name }}</td>
                         <td>{{ item.ingredients }}</td>
-                        <td>${{ item.price }}</td>
+                        <td>{{ item.price }}</td>
                         <td>
                             <div class="quantity-controls">
                                 <button type="button" class="quantity-btn" onclick="decreaseQuantity(this)">-</button>
-                                <input type="number" name="quantity" min="1" value="1" class="quantity-input">
+                                <input type="number" name="quantity_{{ item.id }}" min="1" value="1" class="quantity-input">
                                 <button type="button" class="quantity-btn" onclick="increaseQuantity(this)">+</button>
                             </div>
                         </td>
@@ -40,7 +40,7 @@
                 {% endfor %}
             </tbody>
         </table>
-        <button type="submit">Place Order</button>
+        <button type="button" onclick="confirmOrder()">Place Order</button>
     </form>
     {% with messages = get_flashed_messages(with_categories=true) %}
         {% if messages %}
@@ -62,6 +62,13 @@
         function increaseQuantity(button) {
             const input = button.previousElementSibling;
             input.value = parseInt(input.value) + 1;
+        }
+
+        function confirmOrder() {
+            const confirmation = confirm("Are you sure you want to place the order?");
+            if (confirmation) {
+                document.getElementById('order-form').submit();
+            }
         }
     </script>
 </body>
