@@ -175,7 +175,7 @@ def generate_report():
                 for item in order.order_items:
                     total_cost += item.menu_item.cost * item.quantity
 
-        total_salaries = sum(employee.salary for employee in Employee.query.all())
+        total_salaries = sum(employee.salary * len(selected_months) for employee in Employee.query.all())
 
         print("Selected date range for expenditures:", min(selected_dates).date(), max(selected_dates).date().replace(day=calendar.monthrange(max(selected_dates).year, max(selected_dates).month)[1]))
         expenditures = Expenditure.query.filter(Expenditure.date.between(

@@ -42,15 +42,6 @@
         </table>
         <button type="button" onclick="confirmOrder()">Place Order</button>
     </form>
-    {% with messages = get_flashed_messages(with_categories=true) %}
-        {% if messages %}
-            <ul>
-            {% for category, message in messages %}
-                <li class="{{ category }}">{{ message }}</li>
-            {% endfor %}
-            </ul>
-        {% endif %}
-    {% endwith %}
     <script>
         function decreaseQuantity(button) {
             const input = button.nextElementSibling;

@@ -6,6 +6,10 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/receipt.css') }}">
 </head>
 <body>
+    <div class="header">
+        <img src="{{ url_for('static', filename='img/logo.png') }}" alt="Logo" class="logo">
+        <!-- <p class="company-name">The Stallions</p> -->
+    </div>
     <h1>Order Receipt</h1>
     <p>Order sent to kitchen. Printing Receipt.</p>
     <div id="receipt">
@@ -30,7 +34,7 @@
                 {% endfor %}
             </tbody>
         </table>
-        <p><strong>Total Amount:</strong> ${{ order.total_amount }}</p>
+        <p><strong>Total Amount:</strong> {{ order.total_amount }}</p>
     </div>
     <button onclick="window.print()">Print Receipt</button>
     <a href="{{ url_for('main.orders') }}">Back to Orders</a>
