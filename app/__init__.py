@@ -6,7 +6,7 @@ def create_app():
     app = Flask(__name__)
     app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///restaurant.db'
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-    app.config['SECRET_KEY'] = '101010'  # Add this line
+    app.config['SECRET_KEY'] = '101010'
 
     db.init_app(app)
 
