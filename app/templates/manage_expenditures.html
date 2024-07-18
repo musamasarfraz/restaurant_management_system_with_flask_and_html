@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Manage Monthly Expenditures</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/manage_expenditures.css') }}">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <a href="{{ url_for('main.index') }}" class="back-btn">Home</a>
+    <div class="container">
+        <h1>Manage Monthly Expenditures</h1>
+        <form id="expenditures-form" method="POST">
+            <label for="year">Select Year:</label>
+            <select id="year" name="year" required>
+                {% for y in range(datetime.now().year, 2019, -1) %}
+                    <option value="{{ y }}" {% if y == datetime.now().year %}selected{% endif %}>{{ y }}</option>
+                {% endfor %}
+            </select>
+
+            <label for="month">Select Month:</label>
+            <select id="month" name="month" required>
+                {% for m in range(1, 13) %}
+                    <option value="{{ m }}" {% if m == datetime.now().month %}selected{% endif %}>{{ calendar.month_name[m] }}</option>
+                {% endfor %}
+            </select>
+
+            <button type="button" id="display-expenditures-button">Load Expenditures</button>
+        </form>
+
+        <button type="button" onclick="toggleExpenditureForm()">Add/Modify Expenditure</button>
+
+        <div id="expenditureForm" class="form-container" style="display:none;">
+            <h2>Add/Modify Expenditure</h2>
+            <input type="text" id="description" name="description" required placeholder="Expenditure Description">
+            <input type="number" id="amount" name="amount" step="0.01" required placeholder="Amount">
+            <button type="button" id="add-expenditure-button">Add/Modify Expenditure</button>
+        </div>
+
+        <h2>Existing Expenditures for Selected Month</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Description</th>
+                    <th>Amount</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody id="expenditures-list">
+                <!-- Expenditure rows will be dynamically loaded here -->
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        function toggleExpenditureForm() {
+            var form = document.getElementById('expenditureForm');
+            form.style.display = form.style.display === 'none' ? 'block' : 'none';
+        }
+
+        $(document).ready(function() {
+            // Set the current month and year as default values
+            $('#year').val(new Date().getFullYear());
+            $('#month').val(new Date().getMonth() + 1);
+
+            // Load expenditures for the current month and year on page load
+            loadExpenditures();
+
+            $('#display-expenditures-button').click(function() {
+                console.log("Load Expenditures button clicked");
+                loadExpenditures();
+            });
+
+            $('#add-expenditure-button').click(function() {
+                var description = $('#description').val();
+                var amount = $('#amount').val();
+                var year = $('#year').val();
+                var month = $('#month').val();
+
+                console.log("Adding/Modifying expenditure:", { description, amount, year, month });
+
+                $.ajax({
+                    type: 'POST',
+                    url: '{{ url_for("main.manage_expenditures") }}',
+                    contentType: 'application/json',
+                    data: JSON.stringify({
+                        'add_modify_expenditure': true,
+                        'description': description,
+                        'amount': amount,
+                        'year': year,
+                        'month': month
+                    }),
+                    success: function(response) {
+                        console.log("Add/Modify response:", response);
+                        if (response.status === 'success') {
+                            alert(response.message);
+                            updateExpendituresTable(response.expenditures);
+                            $('#description').val('');
+                            $('#amount').val('');
+                            toggleExpenditureForm();
+                        } else {
+                            console.error("Error in add/modify response:", response);
+                        }
+                    },
+                    error: function(error) {
+                        console.error("Error in add/modify AJAX request:", error);
+                    }
+                });
+            });
+
+            $(document).on('click', '.remove-expenditure-button', function() {
+                var expenditureId = $(this).data('id');
+                var year = $('#year').val();
+                var month = $('#month').val();
+
+                console.log("Removing expenditure:", { expenditureId, year, month });
+
+                $.ajax({
+                    type: 'POST',
+                    url: '{{ url_for("main.manage_expenditures") }}',
+                    contentType: 'application/json',
+                    data: JSON.stringify({
+                        'remove_expenditure': true,
+                        'expenditure_id': expenditureId,
+                        'year': year,
+                        'month': month
+                    }),
+                    success: function(response) {
+                        console.log("Remove response:", response);
+                        if (response.status === 'success') {
+                            alert(response.message);
+                            updateExpendituresTable(response.expenditures);
+                        } else {
+                            console.error("Error in remove response:", response);
+                        }
+                    },
+                    error: function(error) {
+                        console.error("Error in remove AJAX request:", error);
+                    }
+                });
+            });
+
+            function loadExpenditures() {
+                var year = $('#year').val();
+                var month = $('#month').val();
+
+                console.log("Loading expenditures for year:", year, "month:", month);
+
+                $.ajax({
+                    type: 'GET',
+                    url: '{{ url_for("main.manage_expenditures") }}',
+                    data: { 'year': year, 'month': month },
+                    success: function(response) {
+                        console.log("Load expenditures response:", response);
+                        if (response.expenditures && response.expenditures.length > 0) {
+                            updateExpendituresTable(response.expenditures);
+                        } else {
+                            console.log("No expenditures found for the selected month.");
+                            updateExpendituresTable([]);
+                        }
+                    },
+                    error: function(error) {
+                        console.error("Error in load expenditures AJAX request:", error);
+                    }
+                });
+            }
+
+            function updateExpendituresTable(expenditures) {
+                console.log("Updating expenditures table with:", expenditures);
+                var tableBody = $('#expenditures-list');
+                tableBody.empty();
+                $.each(expenditures, function(index, exp) {
+                    tableBody.append(
+                        '<tr data-id="' + exp.id + '">' +
+                        '<td>' + exp.description + '</td>' +
+                        '<td>' + exp.amount + '</td>' +
+                        '<td><button type="button" class="remove-expenditure-button" data-id="' + exp.id + '">Remove</button></td>' +
+                        '</tr>'
+                    );
+                });
+            }
+        });
+    </script>
+</body>
+</html>

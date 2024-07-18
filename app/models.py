@@ -17,6 +17,7 @@ class MenuItem(db.Model):
 class Order(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     customer_name = db.Column(db.String(100), nullable=False)
+    customer_contact = db.Column(db.String(100), nullable=False)
     datetime = db.Column(db.DateTime, default=datetime.utcnow)
     total_amount = db.Column(db.Float, nullable=False)
 
@@ -45,9 +46,8 @@ class Employee(db.Model):
 
 class Expenditure(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(100), nullable=False)
+    description = db.Column(db.String(100), nullable=False)
     amount = db.Column(db.Float, nullable=False)
-    date = db.Column(db.DateTime, default=datetime.utcnow)
-
-    def __repr__(self):
-        return f'<Expenditure {self.name}>'
+    year = db.Column(db.Integer, nullable=False)
+    month = db.Column(db.Integer, nullable=False)
+    date_added = db.Column(db.DateTime, default=datetime.utcnow)

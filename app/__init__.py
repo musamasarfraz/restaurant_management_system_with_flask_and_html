@@ -1,5 +1,5 @@
-# In __init__.py
 from flask import Flask
+from flask_migrate import Migrate
 from .models import db
 
 def create_app():
@@ -9,6 +9,7 @@ def create_app():
     app.config['SECRET_KEY'] = '101010'
 
     db.init_app(app)
+    migrate = Migrate(app, db)
 
     with app.app_context():
         db.create_all()

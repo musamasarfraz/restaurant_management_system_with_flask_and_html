@@ -16,7 +16,7 @@
         <p><strong>Other Expenditures:</strong></p>
         <ul>
             {% for exp in report.expenditure_details %}
-                <li>{{ exp.name }}: {{ exp.amount }}</li>
+                <li>{{ exp.description }} ({{ exp.year }}-{{ exp.month }}): {{ exp.amount }}</li>
             {% endfor %}
         </ul>
         <p><strong>Total Other Expenditures:</strong> {{ report.other_expenditures }}</p>

@@ -8,12 +8,12 @@
 <body>
     <div class="header">
         <img src="{{ url_for('static', filename='img/logo.png') }}" alt="Logo" class="logo">
-        <!-- <p class="company-name">The Stallions</p> -->
     </div>
     <h1>Order Receipt</h1>
-    <p>Order sent to kitchen. Printing Receipt.</p>
+    <p>Order sent to the kitchen.</p>
     <div id="receipt">
         <p><strong>Customer Name:</strong> {{ order.customer_name }}</p>
+        <p><strong>Customer Contact:</strong> {{ order.customer_contact }}</p>
         <p><strong>Order Date:</strong> {{ order.datetime.strftime('%Y-%m-%d %H:%M:%S') }}</p>
         <h2>Order Items</h2>
         <table>
@@ -36,7 +36,5 @@
         </table>
         <p><strong>Total Amount:</strong> {{ order.total_amount }}</p>
     </div>
-    <button onclick="window.print()">Print Receipt</button>
-    <a href="{{ url_for('main.orders') }}">Back to Orders</a>
 </body>
 </html>

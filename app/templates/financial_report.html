@@ -32,104 +32,23 @@
             <label><input type="checkbox" name="months" value="11"> November</label>
             <label><input type="checkbox" name="months" value="12"> December</label>
         </div>
-        
-        <button type="button" onclick="toggleExpenditureForm()">Add Other Expenditure</button>
-        
-        <div id="expenditureForm" class="form-container" style="display:none;">
-            <h2>Add Expenditure</h2>
-            <input type="text" id="name" name="name" required placeholder="Expenditure Name">
-            <input type="number" id="amount" name="amount" step="0.01" required placeholder="Amount">
-            <button type="button" id="add-expenditure-button">Add Expenditure</button>
-        </div>
 
         <button type="button" id="generate-report-button">Generate Report</button>
     </form>
 
-    <h2>Added Expenditures</h2>
-    <table>
-        <thead>
-            <tr>
-                <th>Name</th>
-                <th>Amount</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody id="expenditures-list">
-            {% for exp in expenditures %}
-                <tr data-id="{{ exp.id }}">
-                    <td>{{ exp.name }}</td>
-                    <td>{{ exp.amount }}</td>
-                    <td>
-                        <button type="button" class="remove-expenditure-button" data-id="{{ exp.id }}">Remove</button>
-                    </td>
-                </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-
     <script>
-        function toggleExpenditureForm() {
-            var form = document.getElementById('expenditureForm');
-            form.style.display = form.style.display === 'none' ? 'block' : 'none';
-        }
-    
         $(document).ready(function() {
-            $('#add-expenditure-button').click(function() {
-                var name = $('#name').val();
-                var amount = $('#amount').val();
-    
-                $.ajax({
-                    type: 'POST',
-                    url: '{{ url_for("main.financial_report") }}',
-                    contentType: 'application/json',
-                    data: JSON.stringify({
-                        'add_expenditure': true,
-                        'name': name,
-                        'amount': amount
-                    }),
-                    success: function(response) {
-                        if (response.status === 'success') {
-                            alert(response.message);
-                            updateExpendituresTable(response.expenditures);
-                            $('#name').val('');
-                            $('#amount').val('');
-                        }
-                    }
-                });
-            });
-    
-            $(document).on('click', '.remove-expenditure-button', function() {
-                var expenditureId = $(this).data('id');
-    
-                $.ajax({
-                    type: 'POST',
-                    url: '{{ url_for("main.financial_report") }}',
-                    contentType: 'application/json',
-                    data: JSON.stringify({
-                        'remove_expenditure': true,
-                        'expenditure_id': expenditureId
-                    }),
-                    success: function(response) {
-                        if (response.status === 'success') {
-                            alert(response.message);
-                            updateExpendituresTable(response.expenditures);
-                        }
-                    }
-                });
-            });
-    
             $('#generate-report-button').click(function() {
                 generateReport();
             });
-    
+
             function generateReport() {
                 var year = $('#year').val();
                 var months = [];
                 $('#months input:checked').each(function() {
                     months.push($(this).val());
                 });
-    
-                var reportWindow = window.open('', '_blank');
+
                 $.ajax({
                     type: 'POST',
                     url: '{{ url_for("main.generate_report") }}',
@@ -141,23 +60,9 @@
                     }),
                     success: function(response) {
                         if (response.status === 'success') {
-                            reportWindow.location.href = response.redirect_url;
+                            window.location.href = response.redirect_url;
                         }
                     }
-                });
-            }
-    
-            function updateExpendituresTable(expenditures) {
-                var tableBody = $('#expenditures-list');
-                tableBody.empty();
-                $.each(expenditures, function(index, exp) {
-                    tableBody.append(
-                        '<tr data-id="' + exp.id + '">' +
-                        '<td>' + exp.name + '</td>' +
-                        '<td>' + exp.amount + '</td>' +
-                        '<td><button type="button" class="remove-expenditure-button" data-id="' + exp.id + '">Remove</button></td>' +
-                        '</tr>'
-                    );
                 });
             }
         });

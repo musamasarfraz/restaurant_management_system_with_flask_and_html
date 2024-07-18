@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <title>Orders</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/orders.css') }}">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body>
     <a href="{{ url_for('main.index') }}" class="back-btn">Home</a>
@@ -11,6 +12,10 @@
     <form id="order-form" method="POST">
         <label for="customer_name">Customer Name:</label>
         <input type="text" id="customer_name" name="customer_name" required>
+
+        <label for="customer_contact">Customer Contact:</label>
+        <input type="text" id="customer_contact" name="customer_contact" required>
+
         <h2>Menu</h2>
         <table id="menu_items">
             <thead>
@@ -42,6 +47,9 @@
         </table>
         <button type="button" onclick="confirmOrder()">Place Order</button>
     </form>
+
+    <iframe id="receipt-iframe" style="display:none;"></iframe>
+
     <script>
         function decreaseQuantity(button) {
             const input = button.nextElementSibling;
@@ -58,8 +66,35 @@
         function confirmOrder() {
             const confirmation = confirm("Are you sure you want to place the order?");
             if (confirmation) {
-                document.getElementById('order-form').submit();
+                const form = $('#order-form');
+                $.ajax({
+                    type: 'POST',
+                    url: '{{ url_for("main.orders") }}',
+                    data: form.serialize(),
+                    success: function(response) {
+                        if (response.status === 'success') {
+                            printReceipt(response.receipt_html);
+                        } else {
+                            alert('There was an error placing the order.');
+                        }
+                    },
+                    error: function() {
+                        alert('There was an error placing the order.');
+                    }
+                });
             }
+        }
+
+        function printReceipt(receiptHtml) {
+            const iframe = document.getElementById('receipt-iframe');
+            const doc = iframe.contentDocument || iframe.contentWindow.document;
+            doc.open();
+            doc.write(receiptHtml);
+            doc.close();
+            iframe.style.display = 'block';
+            iframe.contentWindow.focus();
+            iframe.contentWindow.print();
+            iframe.style.display = 'none';
         }
     </script>
 </body>
